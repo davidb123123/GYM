@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GYM">
+<title>GYM</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#080808;--sur:#111;--s2:#161616;--bdr:#1E1E1E;--b2:#141414;
+  --txt:#F0EDE8;--mut:#555;--m2:#2A2A2A;
+  --or:#FF6B35;--te:#4ECDC4;--ye:#FFD166;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,Arial,sans-serif;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;background:var(--bg);color:var(--txt);font-family:var(--font);overflow:hidden;}
+#app{height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto;}
+.screen{height:100%;display:flex;flex-direction:column;overflow:hidden;}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--sb)+16px);}
+.scroll::-webkit-scrollbar{display:none;}
+
+.hdr{padding:calc(var(--st)+14px) 20px 0;border-bottom:1px solid var(--bdr);flex-shrink:0;background:var(--bg);}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;}
+.hdr-left{flex:1;}
+.logo{font-size:9px;letter-spacing:5px;color:var(--mut);text-transform:uppercase;margin-bottom:2px;font-weight:500;}
+.htitle{font-size:24px;font-weight:800;letter-spacing:1px;text-transform:uppercase;line-height:1;}
+.hdate{font-size:11px;color:var(--mut);letter-spacing:.5px;margin-top:5px;}
+.gear-btn{background:none;border:none;color:var(--mut);font-size:24px;cursor:pointer;padding:6px;line-height:1;-webkit-tap-highlight-color:transparent;transition:color .2s;}
+.gear-btn:active{color:var(--or);}
+.nav{display:flex;margin-top:14px;}
+.nb{flex:1;padding:10px 0;background:none;border:none;border-bottom:2px solid transparent;color:var(--mut);font-size:10px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;font-family:var(--font);font-weight:700;transition:all .2s;}
+.nb.on{border-bottom-color:var(--or);color:var(--txt);}
+
+.sec{padding:20px;}
+.slbl{font-size:9px;letter-spacing:4px;color:var(--mut);text-transform:uppercase;margin-bottom:14px;font-weight:600;}
+.dcard{background:var(--sur);border-radius:8px;padding:20px;margin-bottom:10px;cursor:pointer;border:1px solid transparent;border-left-width:3px;-webkit-tap-highlight-color:transparent;}
+.dcard:active{opacity:.75;}
+.dsub{font-size:9px;letter-spacing:3px;color:var(--mut);text-transform:uppercase;margin-bottom:5px;font-weight:500;}
+.dtitle{font-size:24px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;}
+.dmeta{font-size:12px;color:var(--mut);margin-top:6px;}
+.kbox{background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:16px;margin-top:20px;}
+.klbl{font-size:9px;letter-spacing:4px;color:var(--mut);text-transform:uppercase;margin-bottom:10px;font-weight:600;}
+.krow{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.kdot{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;}
+.ktext{font-size:13px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.5px;}
+
+.setscr{height:100%;display:flex;flex-direction:column;background:var(--bg);}
+.sethdr{padding:calc(var(--st)+12px) 20px 12px;border-bottom:1px solid var(--bdr);flex-shrink:0;background:var(--bg);}
+.setrow{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bbtn{background:none;border:none;color:var(--mut);font-size:26px;cursor:pointer;padding:0;line-height:1;-webkit-tap-highlight-color:transparent;font-weight:300;}
+.seclbl{font-size:9px;letter-spacing:4px;text-transform:uppercase;font-weight:700;flex:1;}
+.slidecnt{font-size:11px;letter-spacing:1px;color:var(--mut);font-weight:500;}
+.pbwrap{height:3px;background:var(--bdr);border-radius:2px;overflow:hidden;}
+.pbfill{height:100%;border-radius:2px;transition:width .3s ease;}
+
+.setscroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:120px;}
+.setscroll::-webkit-scrollbar{display:none;}
+
+.illwrap{padding:18px 20px 0;display:flex;gap:10px;justify-content:center;}
+.illbox{flex:1;background:var(--sur);border:1px solid var(--b2);border-radius:8px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:5px;max-width:155px;}
+.illlbl{font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+.illbox svg{width:100%;max-width:110px;height:auto;}
+
+.exinfo{padding:16px 20px 6px;}
+.exname{font-size:22px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;line-height:1.2;margin-bottom:6px;}
+.setbadge{display:inline-block;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.exnote{background:var(--sur);border-left:3px solid;border-radius:3px;padding:10px 12px;font-size:12px;color:#888;line-height:1.5;}
+
+.wsec{padding:12px 20px 10px;}
+.wlbl{font-size:9px;letter-spacing:4px;color:var(--mut);text-transform:uppercase;margin-bottom:8px;font-weight:600;}
+.wrec{background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:10px 14px;margin-bottom:8px;}
+.wreclbl{font-size:8px;letter-spacing:2px;color:var(--mut);text-transform:uppercase;margin-bottom:2px;font-weight:600;}
+.wrecval{font-size:16px;font-weight:700;}
+.wactual{display:flex;align-items:center;gap:8px;background:var(--s2);border-radius:8px;padding:10px 14px;}
+.wactlbl{font-size:9px;letter-spacing:2px;color:var(--mut);text-transform:uppercase;font-weight:600;white-space:nowrap;}
+.wactinp{background:transparent;border:none;border-bottom:1px solid var(--m2);color:var(--txt);font-size:16px;font-weight:700;font-family:var(--font);width:100px;text-align:right;outline:none;padding:2px 0;flex:1;}
+.wactinp:focus{border-bottom-color:var(--or);}
+.wact-select{background:var(--s2);border:1px solid var(--bdr);border-radius:4px;color:var(--txt);font-size:11px;font-family:var(--font);padding:4px 6px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;text-align:center;font-weight:600;letter-spacing:.5px;}
+.wact-select:focus{border-color:var(--or);}
+
+.repsec{padding:0 20px 14px;}
+.replbl{font-size:9px;letter-spacing:4px;color:var(--mut);text-transform:uppercase;margin-bottom:10px;font-weight:600;}
+.reps-row{display:flex;gap:8px;align-items:stretch;}
+.rep-full{flex:1;padding:14px 8px;border-radius:8px;border:none;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:var(--font);-webkit-tap-highlight-color:transparent;text-align:center;line-height:1.3;}
+.rep-full:active{opacity:.75;}
+.rep-full.logged{position:relative;}
+.rep-partial-wrap{display:flex;align-items:center;gap:6px;background:var(--s2);border-radius:8px;padding:10px 12px;flex:1;}
+.rp-lbl{font-size:8px;letter-spacing:1px;color:var(--mut);text-transform:uppercase;font-weight:600;white-space:nowrap;}
+.rp-inp{background:transparent;border:none;border-bottom:1px solid var(--m2);color:var(--txt);font-size:20px;font-weight:700;font-family:var(--font);width:44px;text-align:center;outline:none;padding:2px 0;}
+.rp-inp:focus{border-bottom-color:var(--or);}
+.rp-of{font-size:11px;color:var(--mut);white-space:nowrap;font-weight:500;}
+.rp-save{background:var(--m2);border:none;border-radius:6px;color:var(--txt);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 10px;cursor:pointer;font-family:var(--font);white-space:nowrap;-webkit-tap-highlight-color:transparent;}
+.rp-save:active{opacity:.7;}
+
+.dsec{padding:0 20px 14px;}
+.dlbl{font-size:9px;letter-spacing:4px;color:var(--mut);text-transform:uppercase;margin-bottom:10px;font-weight:600;}
+.dbtns{display:flex;gap:8px;}
+.dbtn{flex:1;padding:10px 4px;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--mut);font-size:10px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;font-family:var(--font);-webkit-tap-highlight-color:transparent;text-align:center;line-height:1.4;transition:all .15s;}
+.dbtn .dn{font-size:22px;font-weight:900;display:block;line-height:1;margin-bottom:3px;}
+.dbtn:active{opacity:.7;}
+
+.gate-status{padding:0 20px 10px;display:flex;gap:8px;align-items:center;justify-content:center;}
+.gate-chip{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.gate-chip .gc-icon{font-size:14px;line-height:1;}
+
+.cbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:10px 20px calc(var(--sb)+10px);background:linear-gradient(to top,#080808 60%,transparent);}
+.cbtn{width:100%;padding:16px;border-radius:8px;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--font);border:none;-webkit-tap-highlight-color:transparent;}
+.cbtn:active{opacity:.8;}
+
+.sumscr{height:100%;display:flex;flex-direction:column;}
+.sumscroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:20px;}
+.sumscroll::-webkit-scrollbar{display:none;}
+.sumhero{padding:28px 20px 16px;text-align:center;}
+.sumbig{font-size:72px;font-weight:900;letter-spacing:-2px;line-height:1;}
+.sumsub{font-size:9px;letter-spacing:4px;color:var(--mut);text-transform:uppercase;margin-top:6px;font-weight:600;}
+.sum-secondary{font-size:16px;font-weight:700;margin-top:10px;letter-spacing:.5px;}
+.pct-bar-wrap{margin:14px 20px 0;height:6px;background:var(--bdr);border-radius:3px;overflow:hidden;}
+.pct-bar-fill{height:100%;border-radius:3px;}
+.scard{margin:0 20px 12px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:16px;}
+.sclbl{font-size:9px;letter-spacing:3px;color:var(--mut);text-transform:uppercase;margin-bottom:12px;font-weight:600;}
+.sexrow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--b2);}
+.sexrow:last-child{border-bottom:none;}
+.sdot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+.sexname{flex:1;font-size:12px;text-transform:uppercase;letter-spacing:.3px;font-weight:500;}
+.sewt{font-size:11px;color:var(--mut);}
+.serep{font-size:12px;font-weight:700;margin-left:4px;}
+.sescore{font-size:11px;font-weight:700;margin-left:6px;padding:2px 6px;border-radius:3px;}
+.btn{width:100%;padding:14px;border-radius:8px;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--font);margin-bottom:8px;border:1.5px solid;-webkit-tap-highlight-color:transparent;}
+.btn:active{opacity:.75;}
+.btn-ghost{background:transparent;border-color:var(--m2);color:var(--mut);}
+.bwrap{padding:0 20px;}
+
+.score-breakdown{display:flex;gap:10px;margin-top:12px;}
+.score-col{flex:1;text-align:center;}
+.score-col-lbl{font-size:8px;letter-spacing:2px;color:var(--mut);text-transform:uppercase;margin-bottom:6px;font-weight:600;}
+.score-mini-bar{height:4px;background:var(--bdr);border-radius:2px;overflow:hidden;margin-bottom:4px;}
+.score-mini-fill{height:100%;border-radius:2px;}
+.score-col-val{font-size:14px;font-weight:800;}
+
+.calnav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 8px;}
+.calnb{background:none;border:none;color:var(--mut);cursor:pointer;font-size:26px;padding:4px 10px;line-height:1;-webkit-tap-highlight-color:transparent;font-weight:300;}
+.calmn{font-size:12px;letter-spacing:3px;color:var(--txt);text-transform:uppercase;font-weight:700;}
+.cal-summary{text-align:center;padding:0 20px 12px;font-size:10px;letter-spacing:2px;color:var(--mut);text-transform:uppercase;font-weight:600;}
+.caldow{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:0 20px 6px;}
+.caldowl{text-align:center;font-size:10px;color:#3A3A3A;letter-spacing:1px;padding:4px 0;font-weight:600;}
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:0 20px 16px;}
+.calcel{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:4px;font-size:12px;font-weight:600;border:1px solid transparent;cursor:default;}
+.calcel.hw{cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.calcel.hw:active{opacity:.7;}
+.calcel.today{border-color:var(--bdr);background:#1A1A1A;color:var(--txt);}
+.caldot{width:4px;height:4px;border-radius:50%;margin-top:2px;}
+.cal-score-txt{font-size:7px;font-weight:700;letter-spacing:.5px;margin-top:1px;line-height:1;}
+.detcard{margin:0 20px 16px;background:var(--sur);border-radius:8px;padding:16px;border:1px solid var(--bdr);}
+.dethead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.detdate{font-size:9px;letter-spacing:3px;color:var(--mut);text-transform:uppercase;margin-bottom:3px;font-weight:600;}
+.dettitle{font-size:20px;font-weight:800;text-transform:uppercase;}
+.det-pct{font-size:28px;font-weight:900;}
+.det-pct-sub{font-size:8px;letter-spacing:3px;color:var(--mut);text-transform:uppercase;font-weight:600;}
+.det-pb{height:4px;background:var(--bdr);border-radius:2px;overflow:hidden;margin:8px 0 12px;}
+.det-pbf{height:100%;border-radius:2px;}
+.det-secondary{font-size:12px;color:var(--mut);margin-bottom:8px;font-weight:500;}
+.empty{text-align:center;padding:60px 20px;color:#252525;font-size:11px;letter-spacing:3px;text-transform:uppercase;line-height:2.5;font-weight:600;}
+
+/* Settings screen */
+.settings-scr{height:100%;display:flex;flex-direction:column;background:var(--bg);}
+.settings-hdr{padding:calc(var(--st)+12px) 20px 12px;border-bottom:1px solid var(--bdr);flex-shrink:0;background:var(--bg);}
+.settings-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--sb)+16px);}
+.settings-scroll::-webkit-scrollbar{display:none;}
+.settings-group{padding:16px 20px;border-bottom:1px solid var(--b2);}
+.settings-group-title{font-size:9px;letter-spacing:4px;color:var(--mut);text-transform:uppercase;margin-bottom:12px;font-weight:600;}
+.settings-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--b2);}
+.settings-row:last-child{border-bottom:none;}
+.settings-exname{flex:1;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
+.settings-input{background:var(--s2);border:1px solid var(--bdr);border-radius:6px;color:var(--txt);font-size:14px;font-weight:700;font-family:var(--font);width:120px;text-align:center;outline:none;padding:8px 10px;}
+.settings-input:focus{border-color:var(--or);}
+.settings-save-msg{text-align:center;padding:12px 20px;font-size:10px;letter-spacing:2px;color:var(--te);text-transform:uppercase;font-weight:600;opacity:0;transition:opacity .3s;}
+.settings-save-msg.show{opacity:1;}
+
+@keyframes si{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+.si{animation:si .18s ease forwards;}
+</style>
+</head>
+<body>
+<div id="app"><div style="display:flex;align-items:center;justify-content:center;height:100%;color:#555;font-size:14px;letter-spacing:2px;text-transform:uppercase;">LOADING...</div></div>
+<script>
+
+const IL={
+  pushup:{a:`<svg viewBox="0 0 110 70" fill="none"><circle cx="90" cy="13" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="90" y1="20" x2="76" y2="38" stroke="#FF6B35" stroke-width="2"/><line x1="76" y1="38" x2="16" y2="38" stroke="#FF6B35" stroke-width="2"/><line x1="85" y1="28" x2="100" y2="36" stroke="#FF6B35" stroke-width="2"/><line x1="72" y1="28" x2="58" y2="36" stroke="#FF6B35" stroke-width="2"/><line x1="100" y1="36" x2="100" y2="54" stroke="#FF6B35" stroke-width="2"/><line x1="58" y1="36" x2="58" y2="54" stroke="#FF6B35" stroke-width="2"/><line x1="16" y1="38" x2="10" y2="54" stroke="#FF6B35" stroke-width="2"/><line x1="28" y1="38" x2="22" y2="54" stroke="#FF6B35" stroke-width="2"/><line x1="6" y1="54" x2="105" y2="54" stroke="#333" stroke-width="1.5"/></svg>`,b:`<svg viewBox="0 0 110 70" fill="none"><circle cx="85" cy="9" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="85" y1="16" x2="70" y2="32" stroke="#FF6B35" stroke-width="2"/><line x1="70" y1="32" x2="16" y2="32" stroke="#FF6B35" stroke-width="2"/><line x1="78" y1="23" x2="98" y2="20" stroke="#FF6B35" stroke-width="2"/><line x1="98" y1="20" x2="98" y2="44" stroke="#FF6B35" stroke-width="2"/><line x1="62" y1="23" x2="44" y2="20" stroke="#FF6B35" stroke-width="2"/><line x1="44" y1="20" x2="44" y2="44" stroke="#FF6B35" stroke-width="2"/><line x1="16" y1="32" x2="10" y2="54" stroke="#FF6B35" stroke-width="2"/><line x1="28" y1="32" x2="22" y2="54" stroke="#FF6B35" stroke-width="2"/><line x1="6" y1="54" x2="105" y2="54" stroke="#333" stroke-width="1.5"/></svg>`},
+  bench:{a:`<svg viewBox="0 0 110 72" fill="none"><rect x="10" y="42" width="90" height="8" rx="2" stroke="#444" stroke-width="1.5"/><rect x="4" y="50" width="9" height="16" rx="1" stroke="#444" stroke-width="1.5"/><rect x="97" y="50" width="9" height="16" rx="1" stroke="#444" stroke-width="1.5"/><circle cx="55" cy="26" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="33" x2="55" y2="42" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="37" x2="28" y2="28" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="37" x2="82" y2="28" stroke="#FF6B35" stroke-width="2"/><line x1="28" y1="28" x2="18" y2="40" stroke="#FF6B35" stroke-width="2"/><line x1="82" y1="28" x2="92" y2="40" stroke="#FF6B35" stroke-width="2"/><line x1="12" y1="40" x2="25" y2="40" stroke="#FF6B35" stroke-width="2.5"/><line x1="85" y1="40" x2="98" y2="40" stroke="#FF6B35" stroke-width="2.5"/></svg>`,b:`<svg viewBox="0 0 110 72" fill="none"><rect x="10" y="42" width="90" height="8" rx="2" stroke="#444" stroke-width="1.5"/><rect x="4" y="50" width="9" height="16" rx="1" stroke="#444" stroke-width="1.5"/><rect x="97" y="50" width="9" height="16" rx="1" stroke="#444" stroke-width="1.5"/><circle cx="55" cy="26" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="33" x2="55" y2="42" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="37" x2="22" y2="20" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="37" x2="88" y2="20" stroke="#FF6B35" stroke-width="2"/><line x1="22" y1="20" x2="12" y2="20" stroke="#FF6B35" stroke-width="2.5"/><line x1="88" y1="20" x2="98" y2="20" stroke="#FF6B35" stroke-width="2.5"/></svg>`},
+  chestpress:{a:`<svg viewBox="0 0 110 72" fill="none"><rect x="46" y="10" width="18" height="52" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="55" cy="28" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="35" x2="55" y2="50" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="42" x2="30" y2="36" stroke="#FF6B35" stroke-width="2"/><line x1="30" y1="36" x2="20" y2="44" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="42" x2="80" y2="36" stroke="#FF6B35" stroke-width="2"/><line x1="80" y1="36" x2="90" y2="44" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="50" x2="46" y2="64" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="50" x2="64" y2="64" stroke="#FF6B35" stroke-width="2"/></svg>`,b:`<svg viewBox="0 0 110 72" fill="none"><rect x="46" y="10" width="18" height="52" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="55" cy="28" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="35" x2="55" y2="50" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="42" x2="18" y2="42" stroke="#FF6B35" stroke-width="2"/><line x1="18" y1="42" x2="12" y2="42" stroke="#FF6B35" stroke-width="2.5"/><line x1="55" y1="42" x2="92" y2="42" stroke="#FF6B35" stroke-width="2"/><line x1="92" y1="42" x2="98" y2="42" stroke="#FF6B35" stroke-width="2.5"/><line x1="55" y1="50" x2="46" y2="64" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="50" x2="64" y2="64" stroke="#FF6B35" stroke-width="2"/></svg>`},
+  fly:{a:`<svg viewBox="0 0 110 70" fill="none"><rect x="10" y="38" width="90" height="7" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="55" cy="24" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="31" x2="55" y2="38" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="34" x2="24" y2="42" stroke="#FF6B35" stroke-width="2"/><line x1="24" y1="42" x2="12" y2="46" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="34" x2="86" y2="42" stroke="#FF6B35" stroke-width="2"/><line x1="86" y1="42" x2="98" y2="46" stroke="#FF6B35" stroke-width="2"/></svg>`,b:`<svg viewBox="0 0 110 70" fill="none"><rect x="10" y="38" width="90" height="7" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="55" cy="24" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="31" x2="55" y2="38" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="34" x2="24" y2="26" stroke="#FF6B35" stroke-width="2"/><line x1="24" y1="26" x2="12" y2="24" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="34" x2="86" y2="26" stroke="#FF6B35" stroke-width="2"/><line x1="86" y1="26" x2="98" y2="24" stroke="#FF6B35" stroke-width="2"/></svg>`},
+  hammer:{a:`<svg viewBox="0 0 110 72" fill="none"><circle cx="55" cy="10" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="17" x2="55" y2="36" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="36" x2="38" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="36" x2="72" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="26" x2="36" y2="30" stroke="#FF6B35" stroke-width="2"/><line x1="36" y1="30" x2="34" y2="54" stroke="#FF6B35" stroke-width="2"/><rect x="27" y="53" width="14" height="6" rx="1" stroke="#FF6B35" stroke-width="1.5"/><line x1="55" y1="26" x2="74" y2="30" stroke="#FF6B35" stroke-width="2"/><line x1="74" y1="30" x2="76" y2="54" stroke="#FF6B35" stroke-width="2"/><rect x="69" y="53" width="14" height="6" rx="1" stroke="#FF6B35" stroke-width="1.5"/></svg>`,b:`<svg viewBox="0 0 110 72" fill="none"><circle cx="55" cy="10" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="17" x2="55" y2="36" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="36" x2="38" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="36" x2="72" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="26" x2="28" y2="20" stroke="#FF6B35" stroke-width="2"/><line x1="28" y1="20" x2="22" y2="30" stroke="#FF6B35" stroke-width="2"/><rect x="15" y="28" width="14" height="6" rx="1" stroke="#FF6B35" stroke-width="1.5"/><line x1="55" y1="26" x2="82" y2="20" stroke="#FF6B35" stroke-width="2"/><line x1="82" y1="20" x2="88" y2="30" stroke="#FF6B35" stroke-width="2"/><rect x="81" y="28" width="14" height="6" rx="1" stroke="#FF6B35" stroke-width="1.5"/></svg>`},
+  cablecurl:{a:`<svg viewBox="0 0 110 72" fill="none"><rect x="5" y="8" width="13" height="54" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="58" cy="12" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="58" y1="19" x2="58" y2="38" stroke="#FF6B35" stroke-width="2"/><line x1="58" y1="38" x2="42" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="58" y1="38" x2="74" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="58" y1="28" x2="38" y2="34" stroke="#FF6B35" stroke-width="2"/><line x1="38" y1="34" x2="36" y2="52" stroke="#FF6B35" stroke-width="2"/><line x1="58" y1="28" x2="78" y2="34" stroke="#FF6B35" stroke-width="2"/><line x1="78" y1="34" x2="80" y2="52" stroke="#FF6B35" stroke-width="2"/></svg>`,b:`<svg viewBox="0 0 110 72" fill="none"><rect x="5" y="8" width="13" height="54" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="58" cy="12" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="58" y1="19" x2="58" y2="38" stroke="#FF6B35" stroke-width="2"/><line x1="58" y1="38" x2="42" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="58" y1="38" x2="74" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="58" y1="27" x2="30" y2="22" stroke="#FF6B35" stroke-width="2"/><line x1="30" y1="22" x2="24" y2="32" stroke="#FF6B35" stroke-width="2"/><line x1="58" y1="27" x2="86" y2="22" stroke="#FF6B35" stroke-width="2"/><line x1="86" y1="22" x2="92" y2="32" stroke="#FF6B35" stroke-width="2"/></svg>`},
+  incline:{a:`<svg viewBox="0 0 110 72" fill="none"><line x1="18" y1="68" x2="90" y2="28" stroke="#444" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="58" x2="18" y2="68" stroke="#444" stroke-width="2"/><circle cx="76" cy="17" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="76" y1="24" x2="68" y2="40" stroke="#FF6B35" stroke-width="2"/><line x1="68" y1="40" x2="54" y2="54" stroke="#FF6B35" stroke-width="2"/><line x1="68" y1="32" x2="84" y2="28" stroke="#FF6B35" stroke-width="2"/><line x1="84" y1="28" x2="88" y2="46" stroke="#FF6B35" stroke-width="2"/><rect x="82" y="46" width="13" height="6" rx="1" stroke="#FF6B35" stroke-width="1.5"/><line x1="68" y1="32" x2="52" y2="30" stroke="#FF6B35" stroke-width="2"/><line x1="52" y1="30" x2="48" y2="48" stroke="#FF6B35" stroke-width="2"/><rect x="42" y="48" width="13" height="6" rx="1" stroke="#FF6B35" stroke-width="1.5"/></svg>`,b:`<svg viewBox="0 0 110 72" fill="none"><line x1="18" y1="68" x2="90" y2="28" stroke="#444" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="58" x2="18" y2="68" stroke="#444" stroke-width="2"/><circle cx="76" cy="17" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="76" y1="24" x2="68" y2="40" stroke="#FF6B35" stroke-width="2"/><line x1="68" y1="40" x2="54" y2="54" stroke="#FF6B35" stroke-width="2"/><line x1="68" y1="32" x2="90" y2="22" stroke="#FF6B35" stroke-width="2"/><line x1="90" y1="22" x2="97" y2="30" stroke="#FF6B35" stroke-width="2"/><rect x="91" y="29" width="13" height="6" rx="1" stroke="#FF6B35" stroke-width="1.5"/><line x1="68" y1="32" x2="46" y2="22" stroke="#FF6B35" stroke-width="2"/><line x1="46" y1="22" x2="38" y2="30" stroke="#FF6B35" stroke-width="2"/><rect x="32" y="29" width="13" height="6" rx="1" stroke="#FF6B35" stroke-width="1.5"/></svg>`},
+  ovcable:{a:`<svg viewBox="0 0 110 72" fill="none"><rect x="90" y="5" width="13" height="58" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="50" cy="12" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="50" y1="19" x2="50" y2="37" stroke="#FF6B35" stroke-width="2"/><line x1="50" y1="37" x2="36" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="50" y1="37" x2="64" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="50" y1="26" x2="68" y2="18" stroke="#FF6B35" stroke-width="2"/><line x1="50" y1="26" x2="32" y2="20" stroke="#FF6B35" stroke-width="2"/><line x1="32" y1="20" x2="24" y2="32" stroke="#FF6B35" stroke-width="2"/></svg>`,b:`<svg viewBox="0 0 110 72" fill="none"><rect x="90" y="5" width="13" height="58" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="50" cy="16" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="50" y1="23" x2="50" y2="40" stroke="#FF6B35" stroke-width="2"/><line x1="50" y1="40" x2="36" y2="60" stroke="#FF6B35" stroke-width="2"/><line x1="50" y1="40" x2="64" y2="60" stroke="#FF6B35" stroke-width="2"/><line x1="50" y1="29" x2="72" y2="10" stroke="#FF6B35" stroke-width="2"/><line x1="50" y1="29" x2="28" y2="10" stroke="#FF6B35" stroke-width="2"/></svg>`},
+  pushdown:{a:`<svg viewBox="0 0 110 72" fill="none"><rect x="46" y="4" width="18" height="20" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="55" cy="13" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="20" x2="55" y2="38" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="38" x2="40" y2="60" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="38" x2="70" y2="60" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="30" x2="36" y2="30" stroke="#FF6B35" stroke-width="2"/><line x1="36" y1="30" x2="34" y2="56" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="30" x2="74" y2="30" stroke="#FF6B35" stroke-width="2"/><line x1="74" y1="30" x2="76" y2="56" stroke="#FF6B35" stroke-width="2"/></svg>`,b:`<svg viewBox="0 0 110 72" fill="none"><rect x="46" y="4" width="18" height="20" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="55" cy="13" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="20" x2="55" y2="38" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="38" x2="40" y2="60" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="38" x2="70" y2="60" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="28" x2="28" y2="22" stroke="#FF6B35" stroke-width="2"/><line x1="28" y1="22" x2="24" y2="34" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="28" x2="82" y2="22" stroke="#FF6B35" stroke-width="2"/><line x1="82" y1="22" x2="86" y2="34" stroke="#FF6B35" stroke-width="2"/></svg>`},
+  soloext:{a:`<svg viewBox="0 0 110 72" fill="none"><circle cx="55" cy="10" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="17" x2="55" y2="36" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="36" x2="40" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="36" x2="70" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="25" x2="72" y2="21" stroke="#FF6B35" stroke-width="2"/><line x1="72" y1="21" x2="76" y2="44" stroke="#FF6B35" stroke-width="2"/><rect x="70" y="44" width="13" height="6" rx="1" stroke="#FF6B35" stroke-width="1.5"/><line x1="55" y1="25" x2="38" y2="29" stroke="#FF6B35" stroke-width="2"/></svg>`,b:`<svg viewBox="0 0 110 72" fill="none"><circle cx="55" cy="10" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="17" x2="55" y2="36" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="36" x2="40" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="36" x2="70" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="25" x2="78" y2="8" stroke="#FF6B35" stroke-width="2"/><rect x="72" y="4" width="13" height="6" rx="1" stroke="#FF6B35" stroke-width="1.5"/><line x1="55" y1="25" x2="38" y2="29" stroke="#FF6B35" stroke-width="2"/></svg>`},
+  latpull:{a:`<svg viewBox="0 0 110 72" fill="none"><rect x="44" y="3" width="22" height="14" rx="2" stroke="#444" stroke-width="1.5"/><line x1="16" y1="26" x2="94" y2="26" stroke="#FF6B35" stroke-width="2.5" stroke-linecap="round"/><circle cx="55" cy="36" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="43" x2="55" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="48" x2="36" y2="44" stroke="#FF6B35" stroke-width="2"/><line x1="36" y1="44" x2="24" y2="26" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="48" x2="74" y2="44" stroke="#FF6B35" stroke-width="2"/><line x1="74" y1="44" x2="86" y2="26" stroke="#FF6B35" stroke-width="2"/></svg>`,b:`<svg viewBox="0 0 110 72" fill="none"><rect x="44" y="3" width="22" height="14" rx="2" stroke="#444" stroke-width="1.5"/><line x1="16" y1="26" x2="94" y2="26" stroke="#FF6B35" stroke-width="2.5" stroke-linecap="round"/><circle cx="55" cy="36" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="43" x2="55" y2="58" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="48" x2="36" y2="44" stroke="#FF6B35" stroke-width="2"/><line x1="36" y1="44" x2="22" y2="44" stroke="#FF6B35" stroke-width="2"/><line x1="22" y1="44" x2="20" y2="26" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="48" x2="74" y2="44" stroke="#FF6B35" stroke-width="2"/><line x1="74" y1="44" x2="88" y2="44" stroke="#FF6B35" stroke-width="2"/><line x1="88" y1="44" x2="90" y2="26" stroke="#FF6B35" stroke-width="2"/></svg>`},
+  row:{a:`<svg viewBox="0 0 110 72" fill="none"><rect x="4" y="20" width="15" height="36" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="66" cy="20" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="66" y1="27" x2="66" y2="42" stroke="#FF6B35" stroke-width="2"/><line x1="66" y1="42" x2="80" y2="60" stroke="#FF6B35" stroke-width="2"/><line x1="66" y1="42" x2="50" y2="60" stroke="#FF6B35" stroke-width="2"/><line x1="66" y1="34" x2="46" y2="38" stroke="#FF6B35" stroke-width="2"/><line x1="46" y1="38" x2="36" y2="40" stroke="#FF6B35" stroke-width="2"/><line x1="66" y1="34" x2="84" y2="37" stroke="#FF6B35" stroke-width="2"/></svg>`,b:`<svg viewBox="0 0 110 72" fill="none"><rect x="4" y="20" width="15" height="36" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="66" cy="20" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="66" y1="27" x2="66" y2="42" stroke="#FF6B35" stroke-width="2"/><line x1="66" y1="42" x2="80" y2="60" stroke="#FF6B35" stroke-width="2"/><line x1="66" y1="42" x2="50" y2="60" stroke="#FF6B35" stroke-width="2"/><line x1="66" y1="34" x2="40" y2="28" stroke="#FF6B35" stroke-width="2"/><line x1="40" y1="28" x2="32" y2="40" stroke="#FF6B35" stroke-width="2"/><line x1="66" y1="34" x2="88" y2="28" stroke="#FF6B35" stroke-width="2"/><line x1="88" y1="28" x2="96" y2="38" stroke="#FF6B35" stroke-width="2"/></svg>`},
+  reardelt:{a:`<svg viewBox="0 0 110 72" fill="none"><rect x="44" y="6" width="22" height="30" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="55" cy="22" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="29" x2="55" y2="46" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="46" x2="40" y2="64" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="46" x2="70" y2="64" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="37" x2="28" y2="46" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="37" x2="82" y2="46" stroke="#FF6B35" stroke-width="2"/></svg>`,b:`<svg viewBox="0 0 110 72" fill="none"><rect x="44" y="6" width="22" height="30" rx="2" stroke="#444" stroke-width="1.5"/><circle cx="55" cy="22" r="7" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="29" x2="55" y2="46" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="46" x2="40" y2="64" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="46" x2="70" y2="64" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="37" x2="12" y2="28" stroke="#FF6B35" stroke-width="2"/><line x1="55" y1="37" x2="98" y2="28" stroke="#FF6B35" stroke-width="2"/></svg>`}
+};
+const ILABS={pushup:["DOWN","UP"],bench:["BOTTOM","PRESS"],chestpress:["ARMS IN","PRESS"],fly:["OPEN","SQUEEZE"],hammer:["HANG","CURL"],cablecurl:["EXTEND","CURL"],incline:["HANG","CURL"],ovcable:["BENT","EXTEND"],pushdown:["START","PUSH"],soloext:["LOWERED","EXTEND"],latpull:["ARMS UP","PULL"],row:["REACH","ROW"],reardelt:["NEUTRAL","FLY"]};
+
+const DC={1:"#4ECDC4",2:"#FFD166",3:"#FF6B35"};
+const DL={1:"Standard",2:"Tough",3:"Brutal"};
+const WCOLOR={tricep:"#FF6B35",back:"#4ECDC4"};
+const WLABEL={tricep:"Tricep Day",back:"Back Day"};
+
+/* Common weight dropdown options by exercise type */
+const WEIGHT_OPTIONS_DB=["15 lbs each","20 lbs each","22 lbs each","25 lbs each","30 lbs each","35 lbs each","40 lbs each","45 lbs each","50 lbs each"];
+const WEIGHT_OPTIONS_MACHINE=["Light","Moderate","Heavy","Very Heavy"];
+const WEIGHT_OPTIONS_BW=["BW"];
+const WEIGHT_OPTIONS_LBS=["45 lbs","55 lbs","65 lbs","70 lbs","75 lbs","80 lbs","85 lbs","90 lbs","100 lbs","110 lbs","120 lbs"];
+
+function getWeightOptions(ex) {
+  if (ex.ill === 'pushup') return WEIGHT_OPTIONS_BW;
+  if (ex.wt && ex.wt.includes('each')) return WEIGHT_OPTIONS_DB;
+  if (ex.wt === 'Moderate' || ex.wt === 'Heavy' || ex.wt === 'Light') return WEIGHT_OPTIONS_MACHINE;
+  if (ex.wt && ex.wt.includes('lbs') && !ex.wt.includes('each')) return WEIGHT_OPTIONS_LBS;
+  return WEIGHT_OPTIONS_MACHINE;
+}
+
+/*
+  EXERCISE LISTS - restructured for circuit flow.
+  Push-ups have sets:4 (appear 4 times in the circuit: once per rotation + finisher).
+  Core exercises have sets:3.
+  "Final Push-Ups" entry removed; push-ups unified into one entry with sets:4.
+*/
+const EXLIST={
+  tricep:[
+    {id:"pu",name:"Push-Ups",sec:"WARM-UP",sets:4,reps:25,rec:"Bodyweight",wt:"BW",note:"Full range, chest to floor. 25 reps each rotation.",ill:"pushup"},
+    {id:"dbb",name:"Flat DB Bench Press",sec:"CHEST",sets:3,reps:10,rec:"45 lbs each hand",wt:"45 lbs each",note:"2-sec descent. Full stretch at bottom. Drive up explosively.",ill:"bench"},
+    {id:"cpm",name:"Chest Press Machine",sec:"CHEST",sets:3,reps:12,rec:"Moderate — near failure",wt:"Moderate",note:"Fixed path. Push to near failure. Last 2 reps = grind.",ill:"chestpress"},
+    {id:"fly",name:"Chest Fly Machine",sec:"CHEST",sets:3,reps:12,rec:"Moderate",wt:"Moderate",note:"Full squeeze at center. Controlled return.",ill:"fly"},
+    {id:"ham",name:"Hammer Curls",sec:"BICEPS",sets:3,reps:10,rec:"30 lbs each arm",wt:"30 lbs each",note:"Elbow pinned to side. Slow controlled descent.",ill:"hammer"},
+    {id:"cbc",name:"Cable Curl — Straight Bar",sec:"BICEPS",sets:3,reps:10,rec:"Moderate",wt:"Moderate",note:"Strict form. No swinging. Peak contraction at top.",ill:"cablecurl"},
+    {id:"inc",name:"Incline DB Curl",sec:"BICEPS",sets:3,reps:10,rec:"20–25 lbs each",wt:"22 lbs each",note:"Bench at 45°. Arms hang behind you. Full stretch.",ill:"incline"},
+    {id:"oce",name:"Overhead Cable Extension",sec:"TRICEPS",sets:3,reps:10,rec:"Moderate",wt:"Moderate",note:"Facing away. Elbows forward. Long head emphasis.",ill:"ovcable"},
+    {id:"rpd",name:"Tricep Rope Pushdown",sec:"TRICEPS",sets:3,reps:10,rec:"Moderate",wt:"Moderate",note:"Elbows locked. Split rope outward at bottom.",ill:"pushdown"},
+    {id:"sao",name:"Single-Arm DB Overhead Ext.",sec:"TRICEPS",sets:3,reps:10,rec:"20–25 lbs each arm",wt:"22 lbs each",note:"Seated. Lower slowly behind head. One arm at a time.",ill:"soloext"},
+  ],
+  back:[
+    {id:"pub",name:"Push-Ups",sec:"WARM-UP",sets:4,reps:25,rec:"Bodyweight",wt:"BW",note:"Full range, chest to floor. 25 reps each rotation.",ill:"pushup"},
+    {id:"dbbb",name:"Flat DB Bench Press",sec:"CHEST",sets:3,reps:10,rec:"45 lbs each hand",wt:"45 lbs each",note:"2-sec descent. Full stretch at bottom.",ill:"bench"},
+    {id:"cpmb",name:"Chest Press Machine",sec:"CHEST",sets:3,reps:12,rec:"Moderate — near failure",wt:"Moderate",note:"Push to near failure. Last 2 reps = grind.",ill:"chestpress"},
+    {id:"flyb",name:"Chest Fly Machine",sec:"CHEST",sets:3,reps:12,rec:"Moderate",wt:"Moderate",note:"Full squeeze at center. Controlled return.",ill:"fly"},
+    {id:"hamb",name:"Hammer Curls",sec:"BICEPS",sets:3,reps:10,rec:"30 lbs each arm",wt:"30 lbs each",note:"Elbow pinned to side. Slow controlled descent.",ill:"hammer"},
+    {id:"cbcb",name:"Cable Curl — Straight Bar",sec:"BICEPS",sets:3,reps:10,rec:"Moderate",wt:"Moderate",note:"Strict form. Peak contraction at top.",ill:"cablecurl"},
+    {id:"incb",name:"Incline DB Curl",sec:"BICEPS",sets:3,reps:10,rec:"20–25 lbs each",wt:"22 lbs each",note:"Bench at 45°. Arms hang behind you. Full stretch.",ill:"incline"},
+    {id:"lat",name:"Lat Pulldown",sec:"BACK",sets:3,reps:10,rec:"70–80 lbs",wt:"75 lbs",note:"Wide grip. Pull to upper chest. Slow controlled return.",ill:"latpull"},
+    {id:"row",name:"Seated Row Machine",sec:"BACK",sets:3,reps:10,rec:"60–70 lbs",wt:"65 lbs",note:"Squeeze shoulder blades at peak. Builds thickness.",ill:"row"},
+    {id:"rdt",name:"Rear Deltoid Machine",sec:"BACK",sets:3,reps:12,rec:"40–50 lbs",wt:"45 lbs",note:"Arms wide. Pull outward. Critical for shoulder health.",ill:"reardelt"},
+  ]
+};
+
+/*
+  CIRCUIT buildSlides:
+  For each rotation (1..maxSets):
+    - Push-up slide (if rotation <= pushup.sets)
+    - All core exercises for this set number (if rotation <= ex.sets)
+  Push-ups have 4 sets, core has 3. So rotation 4 = just pushups (finisher).
+*/
+function buildSlides(type) {
+  const exercises = EXLIST[type];
+  const pushup = exercises.find(e => e.ill === 'pushup');
+  const core = exercises.filter(e => e.ill !== 'pushup');
+  const maxSets = Math.max(pushup ? pushup.sets : 0, ...core.map(e => e.sets));
+  const out = [];
+  for (let s = 1; s <= maxSets; s++) {
+    if (pushup && s <= pushup.sets) {
+      const label = s < pushup.sets ? `ROTATION ${s}` : 'FINISHER';
+      out.push({...pushup, setNum: s, totalSets: pushup.sets, sec: label});
+    }
+    core.forEach(ex => {
+      if (s <= ex.sets) {
+        out.push({...ex, setNum: s, totalSets: ex.sets});
+      }
+    });
+  }
+  return out;
+}
+
+let S = {
+  screen: "home",
+  tab: "home",
+  wtype: null,
+  slides: [],
+  idx: 0,
+  setData: {},
+  sdiff: null,
+  hist: {},
+  selDay: null,
+  hy: new Date().getFullYear(),
+  hm: new Date().getMonth()
+};
+
+/* Settings stored separately */
+let SETTINGS = {};
+
+function loadSettings() {
+  try {
+    const r = localStorage.getItem("gym_settings");
+    if (r) SETTINGS = JSON.parse(r);
+  } catch(e) {}
+}
+function saveSettings() {
+  try {
+    localStorage.setItem("gym_settings", JSON.stringify(SETTINGS));
+  } catch(e) {}
+}
+function getStandardWeight(exId, fallback) {
+  return SETTINGS[exId] || fallback || '';
+}
+
+function load() {
+  try {
+    const r = localStorage.getItem("gym_v6");
+    if (r) S.hist = JSON.parse(r);
+    else {
+      /* Try migrating from v5 */
+      const r5 = localStorage.getItem("gym_v5");
+      if (r5) {
+        S.hist = JSON.parse(r5);
+        save();
+      }
+    }
+  } catch(e) {}
+}
+function save() {
+  try {
+    localStorage.setItem("gym_v6", JSON.stringify(S.hist));
+  } catch(e) {}
+}
+function dkey(d) {
+  const t = d || new Date();
+  return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,"0")}-${String(t.getDate()).padStart(2,"0")}`;
+}
+function todayStr() {
+  return new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+}
+function pctColor(p) { return p >= 90 ? DC[1] : p >= 70 ? DC[2] : DC[3]; }
+function scoreColor(s) { return s >= 8 ? DC[1] : s >= 6 ? DC[2] : DC[3]; }
+
+function calcPct(setData, slides) {
+  let total = 0, done = 0;
+  slides.forEach(sl => {
+    total += sl.reps;
+    const sd = (setData[sl.id] || {})[sl.setNum];
+    if (sd) {
+      if (sd.done) done += sl.reps;
+      else if (sd.partial > 0) done += Math.min(sd.partial, sl.reps);
+    }
+  });
+  return total > 0 ? Math.round((done / total) * 100) : 0;
+}
+
+/* Extract numeric value from a weight string */
+function parseWeightNum(wstr) {
+  if (!wstr) return null;
+  const m = String(wstr).match(/(\d+(\.\d+)?)/);
+  return m ? parseFloat(m[1]) : null;
+}
+
+/*
+  SCORING SYSTEM
+  Per set: rep_score (0-4) + difficulty_score (0-3) + weight_score (0-3) = out of 10
+  Overall = average of all set scores
+*/
+function calcSetScore(sl, sd, standardWeight) {
+  if (!sd || (!sd.done && (!sd.partial || sd.partial <= 0))) {
+    return { total: 0, rep: 0, diff: 0, wt: 0 };
+  }
+
+  /* Rep completion: (completed / target) * 4, max 4 */
+  const repsCompleted = sd.done ? sl.reps : Math.min(sd.partial || 0, sl.reps);
+  const repScore = Math.min((repsCompleted / sl.reps) * 4, 4);
+
+  /* Difficulty: Standard(1)=3, Tough(2)=2, Brutal(3)=1, none=0 */
+  let diffScore = 0;
+  if (sd.difficulty === 1) diffScore = 3;
+  else if (sd.difficulty === 2) diffScore = 2;
+  else if (sd.difficulty === 3) diffScore = 1;
+
+  /* Weight maintenance: compare used weight to standard */
+  let wtScore = 3; /* default full for BW or unparseable */
+  const usedWt = sd.weight || sl.wt;
+  const stdWt = standardWeight || sl.wt;
+  const usedNum = parseWeightNum(usedWt);
+  const stdNum = parseWeightNum(stdWt);
+  if (usedNum !== null && stdNum !== null && stdNum > 0) {
+    const ratio = Math.min(usedNum / stdNum, 1.0);
+    wtScore = ratio * 3;
+  }
+
+  const total = repScore + diffScore + wtScore;
+  return { total: Math.min(total, 10), rep: repScore, diff: diffScore, wt: wtScore };
+}
+
+function calcWorkoutScore(setData, slides) {
+  let totalScore = 0, count = 0;
+  let totalRep = 0, totalDiff = 0, totalWt = 0;
+  slides.forEach(sl => {
+    const sd = (setData[sl.id] || {})[sl.setNum];
+    const stdW = getStandardWeight(sl.id, sl.wt);
+    const s = calcSetScore(sl, sd, stdW);
+    totalScore += s.total;
+    totalRep += s.rep;
+    totalDiff += s.diff;
+    totalWt += s.wt;
+    count++;
+  });
+  if (count === 0) return { score: 0, rep: 0, diff: 0, wt: 0 };
+  return {
+    score: parseFloat((totalScore / count).toFixed(1)),
+    rep: parseFloat((totalRep / count).toFixed(1)),
+    diff: parseFloat((totalDiff / count).toFixed(1)),
+    wt: parseFloat((totalWt / count).toFixed(1))
+  };
+}
+
+function mk(tag, cls, txt) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+
+function render() {
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+  try {
+    if (S.screen === "workout") app.appendChild(setScreen());
+    else if (S.screen === "summary") app.appendChild(sumScreen());
+    else if (S.screen === "settings") app.appendChild(settingsScreen());
+    else app.appendChild(mainScreen());
+  } catch(err) {
+    app.innerHTML = `<div style="padding:40px 20px;color:#FF6B35;font-size:13px;">Error: ${err.message}<br><pre style="margin-top:10px;font-size:10px;color:#555;white-space:pre-wrap;">${err.stack}</pre></div>`;
+  }
+}
+
+function mainScreen() {
+  const w = mk("div","screen");
+  const h = mk("div","hdr");
+  const top = mk("div","hdr-top");
+  const left = mk("div","hdr-left");
+  left.appendChild(mk("div","logo","WORKOUT TRACKER"));
+  left.appendChild(mk("div","htitle","DAVID'S GYM"));
+  top.appendChild(left);
+  const gear = mk("button","gear-btn","\u2699");
+  gear.onclick = () => { S.screen = "settings"; render(); };
+  top.appendChild(gear);
+  h.appendChild(top);
+  h.appendChild(mk("div","hdate",todayStr()));
+  const nav = mk("div","nav");
+  const t1 = mk("button","nb" + (S.tab === "home" ? " on" : ""),"TRAIN");
+  t1.onclick = () => { S.tab = "home"; render(); };
+  const t2 = mk("button","nb" + (S.tab === "history" ? " on" : ""),"HISTORY");
+  t2.onclick = () => { S.tab = "history"; render(); };
+  nav.append(t1, t2);
+  h.appendChild(nav);
+  w.appendChild(h);
+  const sc = mk("div","scroll");
+  S.tab === "home" ? homeTab(sc) : histTab(sc);
+  w.appendChild(sc);
+  return w;
+}
+
+function homeTab(sc) {
+  const s = mk("div","sec");
+  s.appendChild(mk("div","slbl","SELECT TODAY'S WORKOUT"));
+  [
+    {k:"tricep",sub:"CHEST + BICEPS + TRICEPS",meta:"Circuit · 3 rotations + finisher"},
+    {k:"back",sub:"CHEST + BICEPS + BACK",meta:"Circuit · 3 rotations + finisher"}
+  ].forEach(({k,sub,meta}) => {
+    const c = mk("div","dcard");
+    c.style.cssText += `;border-color:${WCOLOR[k]}30;border-left-color:${WCOLOR[k]};`;
+    c.appendChild(mk("div","dsub",sub));
+    const t = mk("div","dtitle",WLABEL[k]);
+    t.style.color = WCOLOR[k];
+    c.appendChild(t);
+    c.appendChild(mk("div","dmeta",meta));
+    c.onclick = () => startWO(k);
+    s.appendChild(c);
+  });
+  const kb = mk("div","kbox");
+  kb.appendChild(mk("div","klbl","DIFFICULTY KEY"));
+  [1,2,3].forEach(l => {
+    const r = mk("div","krow");
+    const d = mk("div","kdot",String(l));
+    d.style.cssText = `background:${DC[l]}20;border:1px solid ${DC[l]};color:${DC[l]};`;
+    r.append(d, mk("div","ktext",DL[l]));
+    kb.appendChild(r);
+  });
+  s.appendChild(kb);
+  sc.appendChild(s);
+}
+
+/* =================== SETTINGS SCREEN =================== */
+function settingsScreen() {
+  const wrap = mk("div","settings-scr si");
+  const hdr = mk("div","settings-hdr");
+  const hr = mk("div","setrow");
+  const bb = mk("button","bbtn","\u2039");
+  bb.onclick = () => { S.screen = "home"; render(); };
+  const sl = mk("div","seclbl","SETTINGS");
+  sl.style.color = "#FF6B35";
+  hr.append(bb, sl);
+  hdr.appendChild(hr);
+  wrap.appendChild(hdr);
+
+  const sc = mk("div","settings-scroll");
+
+  const msg = mk("div","settings-save-msg","SAVED");
+  msg.id = "settings-msg";
+  sc.appendChild(msg);
+
+  /* Build groups by workout type */
+  ["tricep","back"].forEach(type => {
+    const grp = mk("div","settings-group");
+    const title = mk("div","settings-group-title",WLABEL[type]);
+    title.style.color = WCOLOR[type];
+    grp.appendChild(title);
+
+    const exercises = EXLIST[type];
+    const seen = new Set();
+    exercises.forEach(ex => {
+      if (seen.has(ex.id)) return;
+      seen.add(ex.id);
+      const row = mk("div","settings-row");
+      const nm = mk("div","settings-exname",ex.name);
+      nm.style.fontSize = "11px";
+      row.appendChild(nm);
+      const inp = document.createElement("input");
+      inp.className = "settings-input";
+      inp.type = "text";
+      inp.value = SETTINGS[ex.id] || ex.wt;
+      inp.placeholder = ex.wt;
+      inp.oninput = (e) => {
+        SETTINGS[ex.id] = e.target.value;
+        saveSettings();
+        const m = document.getElementById("settings-msg");
+        if (m) { m.classList.add("show"); setTimeout(() => m.classList.remove("show"), 1200); }
+      };
+      row.appendChild(inp);
+      grp.appendChild(row);
+    });
+    sc.appendChild(grp);
+  });
+
+  wrap.appendChild(sc);
+  return wrap;
+}
+
+/* =================== WORKOUT SET SCREEN =================== */
+function setScreen() {
+  const sl = S.slides[S.idx];
+  const c = WCOLOR[S.wtype];
+  const ill = IL[sl.ill] || {a:"",b:""};
+  const labs = ILABS[sl.ill] || ["START","END"];
+  const sd = (S.setData[sl.id] || {})[sl.setNum] || {};
+  const wrap = mk("div","setscr si");
+
+  /* Header */
+  const hdr = mk("div","sethdr");
+  const hr = mk("div","setrow");
+  const bb = mk("button","bbtn","\u2039");
+  bb.onclick = () => {
+    if (S.idx > 0) { S.idx--; render(); }
+    else { S.screen = "home"; S.tab = "home"; render(); }
+  };
+  const sl2 = mk("div","seclbl",sl.sec);
+  sl2.style.color = c;
+  const cnt = mk("div","slidecnt",`${S.idx+1} / ${S.slides.length}`);
+  hr.append(bb, sl2, cnt);
+  hdr.appendChild(hr);
+  const pb = mk("div","pbwrap");
+  const pf = mk("div","pbfill");
+  pf.style.cssText = `width:${(S.idx / S.slides.length)*100}%;background:${c};`;
+  pb.appendChild(pf);
+  hdr.appendChild(pb);
+  wrap.appendChild(hdr);
+
+  const sc = mk("div","setscroll");
+
+  /* Illustrations */
+  const iw = mk("div","illwrap");
+  [["a",labs[0]],["b",labs[1]]].forEach(([pos,lbl]) => {
+    const box = mk("div","illbox");
+    const lb = mk("div","illlbl",lbl);
+    lb.style.color = c;
+    box.appendChild(lb);
+    const sv = document.createElement("div");
+    sv.innerHTML = ill[pos] || "";
+    box.appendChild(sv);
+    iw.appendChild(box);
+  });
+  sc.appendChild(iw);
+
+  /* Name + badge */
+  const info = mk("div","exinfo");
+  const nm = mk("div","exname",sl.name);
+  nm.style.color = c;
+  info.appendChild(nm);
+  const badge = mk("div","setbadge");
+  badge.textContent = sl.totalSets > 1 ? `SET ${sl.setNum} OF ${sl.totalSets}  \u00B7  ${sl.reps} REPS` : `${sl.reps} REPS`;
+  badge.style.cssText = `background:${c}18;color:${c};border:1px solid ${c}40;`;
+  info.appendChild(badge);
+  const nb = mk("div","exnote",sl.note);
+  nb.style.borderLeftColor = c;
+  info.appendChild(nb);
+  sc.appendChild(info);
+
+  /* Weight section */
+  const ws = mk("div","wsec");
+  ws.appendChild(mk("div","wlbl","WEIGHT"));
+  const wrec = mk("div","wrec");
+  wrec.appendChild(mk("div","wreclbl","RECOMMENDED"));
+  const rv = mk("div","wrecval",sl.rec);
+  rv.style.color = c;
+  wrec.appendChild(rv);
+  ws.appendChild(wrec);
+
+  const wa = mk("div","wactual");
+  wa.appendChild(mk("div","wactlbl","STANDARD"));
+
+  const stdWeight = getStandardWeight(sl.id, sl.wt);
+  const ai = document.createElement("input");
+  ai.className = "wactinp";
+  ai.type = "text";
+  ai.value = sd.weight || stdWeight;
+  ai.style.color = c;
+  ai.oninput = e => {
+    esd(sl.id, sl.setNum);
+    S.setData[sl.id][sl.setNum].weight = e.target.value;
+  };
+  wa.appendChild(ai);
+
+  /* Weight dropdown */
+  const wsel = document.createElement("select");
+  wsel.className = "wact-select";
+  wsel.style.borderColor = c + "40";
+  const opts = getWeightOptions(sl);
+  const defOpt = document.createElement("option");
+  defOpt.value = "";
+  defOpt.textContent = "\u25BE";
+  defOpt.disabled = true;
+  defOpt.selected = true;
+  wsel.appendChild(defOpt);
+  opts.forEach(o => {
+    const opt = document.createElement("option");
+    opt.value = o;
+    opt.textContent = o;
+    wsel.appendChild(opt);
+  });
+  wsel.onchange = e => {
+    ai.value = e.target.value;
+    esd(sl.id, sl.setNum);
+    S.setData[sl.id][sl.setNum].weight = e.target.value;
+    wsel.selectedIndex = 0;
+  };
+  wa.appendChild(wsel);
+  ws.appendChild(wa);
+  sc.appendChild(ws);
+
+  /* Two-action gate status */
+  const hasReps = !!(sd.done || (sd.partial && sd.partial > 0));
+  const hasDiff = !!sd.difficulty;
+
+  const gs = mk("div","gate-status");
+  const repChip = mk("div","gate-chip");
+  repChip.style.cssText = hasReps
+    ? `background:${c}20;color:${c};border:1px solid ${c}40;`
+    : `background:var(--s2);color:var(--mut);border:1px solid var(--bdr);`;
+  const repIcon = mk("span","gc-icon", hasReps ? "\u2713" : "\u25CB");
+  repChip.append(repIcon, document.createTextNode(" REPS"));
+  gs.appendChild(repChip);
+
+  const diffChip = mk("div","gate-chip");
+  diffChip.style.cssText = hasDiff
+    ? `background:${DC[sd.difficulty]}20;color:${DC[sd.difficulty]};border:1px solid ${DC[sd.difficulty]}40;`
+    : `background:var(--s2);color:var(--mut);border:1px solid var(--bdr);`;
+  const diffIcon = mk("span","gc-icon", hasDiff ? "\u2713" : "\u25CB");
+  diffChip.append(diffIcon, document.createTextNode(" DIFFICULTY"));
+  gs.appendChild(diffChip);
+  sc.appendChild(gs);
+
+  /* Reps section */
+  const rs = mk("div","repsec");
+  rs.appendChild(mk("div","replbl","LOG YOUR REPS"));
+  const rrow = mk("div","reps-row");
+  const isDone = !!sd.done;
+  const fb = mk("button","rep-full" + (isDone ? " logged" : ""), isDone ? `\u2713 ${sl.reps} / ${sl.reps}` : `FULL ${sl.reps}`);
+  fb.style.cssText = isDone
+    ? `background:${c};color:#080808;`
+    : `background:${c}20;color:${c};border:1px solid ${c}40;`;
+  fb.onclick = () => {
+    esd(sl.id, sl.setNum);
+    const sd2 = S.setData[sl.id][sl.setNum];
+    sd2.done = true;
+    sd2.partial = sl.reps;
+    sd2.weight = ai.value || stdWeight;
+    tryAdvance(sl);
+  };
+  rrow.appendChild(fb);
+  const pw = mk("div","rep-partial-wrap");
+  pw.appendChild(mk("div","rp-lbl","PARTIAL"));
+  const pi = document.createElement("input");
+  pi.className = "rp-inp";
+  pi.type = "number";
+  pi.min = "0";
+  pi.max = String(sl.reps);
+  pi.placeholder = "0";
+  pi.style.color = c;
+  pi.style.borderBottomColor = c + "60";
+  if (sd.partial > 0 && !sd.done) pi.value = String(sd.partial);
+  const ofl = mk("div","rp-of",`/ ${sl.reps}`);
+  const sb2 = mk("button","rp-save","LOG");
+  sb2.onclick = () => {
+    const v = parseInt(pi.value) || 0;
+    esd(sl.id, sl.setNum);
+    const sd2 = S.setData[sl.id][sl.setNum];
+    sd2.done = false;
+    sd2.partial = v;
+    sd2.weight = ai.value || stdWeight;
+    tryAdvance(sl);
+  };
+  pw.append(pi, ofl, sb2);
+  rrow.appendChild(pw);
+  rs.appendChild(rrow);
+  sc.appendChild(rs);
+
+  /* Difficulty section */
+  const ds = mk("div","dsec");
+  ds.appendChild(mk("div","dlbl","DIFFICULTY"));
+  const dr = mk("div","dbtns");
+  [1,2,3].forEach(l => {
+    const db = mk("div","dbtn");
+    const on = sd.difficulty === l;
+    db.style.cssText = `border-color:${on ? DC[l] : "#1E1E1E"};background:${on ? DC[l]+"20" : "transparent"};color:${on ? DC[l] : "#444"};`;
+    const dn = mk("span","dn",String(l));
+    dn.style.color = on ? DC[l] : "#2A2A2A";
+    db.appendChild(dn);
+    db.appendChild(document.createTextNode(DL[l]));
+    db.onclick = () => {
+      esd(sl.id, sl.setNum);
+      S.setData[sl.id][sl.setNum].difficulty = l;
+      S.setData[sl.id][sl.setNum].weight = ai.value || stdWeight;
+      tryAdvance(sl);
+    };
+    dr.appendChild(db);
+  });
+  ds.appendChild(dr);
+  sc.appendChild(ds);
+  wrap.appendChild(sc);
+
+  /* Bottom bar: Skip button (marks incomplete) */
+  const bar = mk("div","cbar");
+  const skipBtn = mk("button","cbtn","SKIP  \u2192");
+  skipBtn.style.cssText = `background:var(--m2);color:var(--mut);`;
+  skipBtn.onclick = () => {
+    esd(sl.id, sl.setNum);
+    S.setData[sl.id][sl.setNum].weight = ai.value || stdWeight;
+    S.setData[sl.id][sl.setNum].skipped = true;
+    advance();
+  };
+  bar.appendChild(skipBtn);
+  wrap.appendChild(bar);
+
+  return wrap;
+}
+
+function esd(id, sn) {
+  if (!S.setData[id]) S.setData[id] = {};
+  if (!S.setData[id][sn]) S.setData[id][sn] = {done:false, partial:0, weight:"", difficulty:null};
+}
+
+/*
+  Two-action gate: after logging reps or selecting difficulty,
+  check if BOTH are recorded. If yes, auto-advance after a brief delay.
+  If not, re-render to show updated state.
+*/
+function tryAdvance(sl) {
+  const sd = (S.setData[sl.id] || {})[sl.setNum] || {};
+  const hasReps = !!(sd.done || (sd.partial && sd.partial > 0));
+  const hasDiff = !!sd.difficulty;
+  if (hasReps && hasDiff) {
+    /* Both done - auto advance after short visual feedback */
+    render();
+    setTimeout(() => { advance(); }, 300);
+  } else {
+    render();
+  }
+}
+
+function advance() {
+  if (S.idx >= S.slides.length - 1) finishWO();
+  else { S.idx++; render(); }
+}
+
+function finishWO() {
+  const k = dkey();
+  const pct = calcPct(S.setData, S.slides);
+  const scoreData = calcWorkoutScore(S.setData, S.slides);
+
+  /* Build per-exercise summary */
+  const exSum = {};
+  const exercises = EXLIST[S.wtype];
+  exercises.forEach(ex => {
+    let doneReps = 0, totalReps = ex.sets * ex.reps, weight = "", diff = null;
+    let exScoreTotal = 0, exScoreCount = 0;
+    for (let s = 1; s <= ex.sets; s++) {
+      const sd = (S.setData[ex.id] || {})[s] || {};
+      if (sd.done) doneReps += ex.reps;
+      else if (sd.partial > 0) doneReps += Math.min(sd.partial, ex.reps);
+      if (sd.weight) weight = sd.weight;
+      if (sd.difficulty && (!diff || sd.difficulty > diff)) diff = sd.difficulty;
+      /* Per-set score for this exercise */
+      const stdW = getStandardWeight(ex.id, ex.wt);
+      const setScore = calcSetScore({...ex, setNum:s, totalSets:ex.sets}, sd, stdW);
+      exScoreTotal += setScore.total;
+      exScoreCount++;
+    }
+    const exScore = exScoreCount > 0 ? parseFloat((exScoreTotal / exScoreCount).toFixed(1)) : 0;
+    exSum[ex.id] = {name:ex.name, doneReps, totalReps, weight:weight||ex.wt, difficulty:diff, score:exScore};
+  });
+
+  /* Build set details for history */
+  const setDetails = [];
+  S.slides.forEach(sl => {
+    const sd = (S.setData[sl.id] || {})[sl.setNum] || {};
+    const stdW = getStandardWeight(sl.id, sl.wt);
+    const ss = calcSetScore(sl, sd, stdW);
+    setDetails.push({
+      id: sl.id,
+      name: sl.name,
+      setNum: sl.setNum,
+      repsTarget: sl.reps,
+      repsCompleted: sd.done ? sl.reps : (sd.partial || 0),
+      weight: sd.weight || sl.wt,
+      difficulty: sd.difficulty,
+      score: parseFloat(ss.total.toFixed(1))
+    });
+  });
+
+  S.hist[k] = {
+    type: S.wtype,
+    label: WLABEL[S.wtype],
+    pct,
+    score: scoreData.score,
+    scoreBreakdown: { rep: scoreData.rep, diff: scoreData.diff, wt: scoreData.wt },
+    difficulty: S.sdiff,
+    exercises: exSum,
+    setDetails,
+    timestamp: new Date().toISOString()
+  };
+  save();
+  S.screen = "summary";
+  render();
+}
+
+/* =================== SUMMARY SCREEN =================== */
+function sumScreen() {
+  const entry = S.hist[dkey()];
+  const c = WCOLOR[S.wtype] || "#FF6B35";
+  const pct = entry?.pct || 0;
+  const score = entry?.score || 0;
+  const sc2 = scoreColor(score);
+  const pc = pctColor(pct);
+  const wrap = mk("div","sumscr");
+  const h = mk("div","hdr");
+  h.appendChild(mk("div","logo","SESSION COMPLETE"));
+  const ht = mk("div","htitle","WORKOUT DONE");
+  ht.style.color = c;
+  h.appendChild(ht);
+  h.appendChild(mk("div","hdate",todayStr()));
+  wrap.appendChild(h);
+
+  const sc = mk("div","sumscroll");
+
+  /* Hero: Score */
+  const hero = mk("div","sumhero");
+  const bn = mk("div","sumbig",String(score));
+  bn.style.color = sc2;
+  hero.appendChild(bn);
+  hero.appendChild(mk("div","sumsub","WORKOUT SCORE OUT OF 10"));
+  const sec2 = mk("div","sum-secondary",`${pct}% COMPLETION`);
+  sec2.style.color = pc;
+  hero.appendChild(sec2);
+  sc.appendChild(hero);
+
+  /* Score bar */
+  const pbw = mk("div","pct-bar-wrap");
+  const pbf = mk("div","pct-bar-fill");
+  pbf.style.cssText = `width:${score*10}%;background:${sc2};`;
+  pbw.appendChild(pbf);
+  sc.appendChild(pbw);
+
+  /* Score breakdown */
+  const bd = entry?.scoreBreakdown || {rep:0, diff:0, wt:0};
+  const sbCard = mk("div","scard");
+  sbCard.appendChild(mk("div","sclbl","SCORE BREAKDOWN"));
+  const sbRow = mk("div","score-breakdown");
+  [
+    {label:"REPS", val:bd.rep, max:4, color:c},
+    {label:"DIFFICULTY", val:bd.diff, max:3, color:DC[1]},
+    {label:"WEIGHT", val:bd.wt, max:3, color:DC[2]}
+  ].forEach(({label, val, max, color}) => {
+    const col = mk("div","score-col");
+    col.appendChild(mk("div","score-col-lbl",label));
+    const bar2 = mk("div","score-mini-bar");
+    const fill2 = mk("div","score-mini-fill");
+    fill2.style.cssText = `width:${(val/max)*100}%;background:${color};`;
+    bar2.appendChild(fill2);
+    col.appendChild(bar2);
+    const v = mk("div","score-col-val",`${val}/${max}`);
+    v.style.color = color;
+    col.appendChild(v);
+    sbRow.appendChild(col);
+  });
+  sbCard.appendChild(sbRow);
+  sc.appendChild(sbCard);
+
+  /* Session difficulty */
+  const scd = mk("div","scard");
+  scd.appendChild(mk("div","sclbl","HOW WAS THE SESSION?"));
+  const dr = mk("div","dbtns");
+  [1,2,3].forEach(l => {
+    const db = mk("div","dbtn");
+    const on = (S.sdiff || entry?.difficulty) === l;
+    db.style.cssText = `border-color:${on ? DC[l] : "#1E1E1E"};background:${on ? DC[l]+"20" : "transparent"};color:${on ? DC[l] : "#444"};`;
+    const dn = mk("span","dn",String(l));
+    dn.style.color = on ? DC[l] : "#2A2A2A";
+    db.appendChild(dn);
+    db.appendChild(document.createTextNode(DL[l]));
+    db.onclick = () => {
+      S.sdiff = l;
+      S.hist[dkey()] = {...S.hist[dkey()], difficulty: l};
+      save();
+      render();
+    };
+    dr.appendChild(db);
+  });
+  scd.appendChild(dr);
+  sc.appendChild(scd);
+
+  /* Exercise breakdown with per-exercise scores */
+  const ec = mk("div","scard");
+  ec.appendChild(mk("div","sclbl","BREAKDOWN"));
+  Object.entries(entry?.exercises || {}).forEach(([id, ex]) => {
+    const r = mk("div","sexrow");
+    const full = ex.doneReps >= ex.totalReps;
+    const dot = mk("div","sdot");
+    dot.style.background = full ? c : (ex.doneReps > 0 ? DC[2] : "#333");
+    r.appendChild(dot);
+    const nmEl = mk("div","sexname",ex.name);
+    nmEl.style.color = ex.doneReps > 0 ? "#F0EDE8" : "#444";
+    r.appendChild(nmEl);
+    if (ex.weight && ex.weight !== "BW") r.appendChild(mk("div","sewt",ex.weight));
+    const rp = mk("div","serep",`${ex.doneReps}/${ex.totalReps}`);
+    rp.style.color = full ? c : (ex.doneReps > 0 ? DC[2] : "#444");
+    r.appendChild(rp);
+    /* Per-exercise score */
+    const exSc = mk("div","sescore",`${ex.score || 0}`);
+    const exScColor = scoreColor(ex.score || 0);
+    exSc.style.cssText = `background:${exScColor}20;color:${exScColor};`;
+    r.appendChild(exSc);
+    ec.appendChild(r);
+  });
+  sc.appendChild(ec);
+
+  /* Buttons */
+  const bw = mk("div","bwrap");
+  const h1 = mk("button","btn","VIEW HISTORY");
+  h1.style.cssText = `background:${c};border-color:${c};color:#080808;`;
+  h1.onclick = () => { S.screen = "home"; S.tab = "history"; render(); };
+  const h2 = mk("button","btn btn-ghost","BACK TO HOME");
+  h2.onclick = () => { S.screen = "home"; S.tab = "home"; render(); };
+  bw.append(h1, h2);
+  sc.appendChild(bw);
+  wrap.appendChild(sc);
+  return wrap;
+}
+
+/* =================== HISTORY / CALENDAR =================== */
+function histTab(sc) {
+  /* Summary stat at top */
+  const allEntries = Object.values(S.hist);
+  if (allEntries.length > 0) {
+    const totalWorkouts = allEntries.length;
+    const avgScore = allEntries.reduce((sum, e) => sum + (e.score || 0), 0) / totalWorkouts;
+    const sumStat = mk("div","cal-summary",
+      `${totalWorkouts} WORKOUT${totalWorkouts !== 1 ? 'S' : ''} COMPLETED \u00B7 AVG SCORE: ${avgScore.toFixed(1)}/10`
+    );
+    sc.appendChild(sumStat);
+  }
+
+  const cn = mk("div","calnav");
+  const pb = mk("button","calnb","\u2039");
+  pb.onclick = () => { const d = new Date(S.hy, S.hm-1, 1); S.hy = d.getFullYear(); S.hm = d.getMonth(); S.selDay = null; render(); };
+  const nb = mk("button","calnb","\u203A");
+  nb.onclick = () => { const d = new Date(S.hy, S.hm+1, 1); S.hy = d.getFullYear(); S.hm = d.getMonth(); S.selDay = null; render(); };
+  const mn = mk("div","calmn", new Date(S.hy, S.hm, 1).toLocaleString("default",{month:"long",year:"numeric"}).toUpperCase());
+  cn.append(pb, mn, nb);
+  sc.appendChild(cn);
+
+  const dow = mk("div","caldow");
+  ["S","M","T","W","T","F","S"].forEach(d => dow.appendChild(mk("div","caldowl",d)));
+  sc.appendChild(dow);
+
+  const grid = mk("div","calgrid");
+  const days = new Date(S.hy, S.hm+1, 0).getDate();
+  const first = new Date(S.hy, S.hm, 1).getDay();
+  const td = new Date();
+  for (let i = 0; i < first; i++) grid.appendChild(mk("div","calcel"));
+  for (let d = 1; d <= days; d++) {
+    const k = `${S.hy}-${String(S.hm+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const e = S.hist[k];
+    const isTD = td.getFullYear() === S.hy && td.getMonth() === S.hm && td.getDate() === d;
+    const isSel = S.selDay === k;
+    const cell = mk("div","calcel" + (e ? " hw" : "") + (isTD ? " today" : ""));
+    if (e) {
+      const ec2 = WCOLOR[e.type] || "#FF6B35";
+      cell.style.background = isSel ? ec2+"50" : ec2+"20";
+      cell.style.color = ec2;
+      if (isSel) cell.style.borderColor = ec2;
+    }
+    cell.appendChild(mk("span","",String(d)));
+    if (e) {
+      const dot = mk("div","caldot");
+      dot.style.background = WCOLOR[e.type] || "#FF6B35";
+      cell.appendChild(dot);
+      /* Show score on calendar */
+      if (e.score != null) {
+        const scoreTxt = mk("div","cal-score-txt",String(e.score));
+        scoreTxt.style.color = scoreColor(e.score);
+        cell.appendChild(scoreTxt);
+      }
+    }
+    if (e) cell.onclick = () => { S.selDay = S.selDay === k ? null : k; render(); };
+    grid.appendChild(cell);
+  }
+  sc.appendChild(grid);
+
+  if (S.selDay && S.hist[S.selDay]) {
+    const e = S.hist[S.selDay];
+    const ec2 = WCOLOR[e.type] || "#FF6B35";
+    const eScore = e.score || 0;
+    const eSc = scoreColor(eScore);
+    const pc = pctColor(e.pct || 0);
+    const card = mk("div","detcard");
+    card.style.borderColor = ec2 + "40";
+    const dh = mk("div","dethead");
+    const dl = mk("div");
+    const pts = S.selDay.split("-");
+    dl.appendChild(mk("div","detdate",
+      new Date(parseInt(pts[0]), parseInt(pts[1])-1, parseInt(pts[2]))
+        .toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"})
+    ));
+    const dt = mk("div","dettitle",e.label);
+    dt.style.color = ec2;
+    dl.appendChild(dt);
+    dh.appendChild(dl);
+    const pr = mk("div","");
+    const pn = mk("div","det-pct",String(eScore));
+    pn.style.color = eSc;
+    pr.appendChild(pn);
+    pr.appendChild(mk("div","det-pct-sub","SCORE / 10"));
+    dh.appendChild(pr);
+    card.appendChild(dh);
+
+    /* Score bar */
+    const dpb = mk("div","det-pb");
+    const dpbf = mk("div","det-pbf");
+    dpbf.style.cssText = `width:${eScore*10}%;background:${eSc};`;
+    dpb.appendChild(dpbf);
+    card.appendChild(dpb);
+
+    /* Completion % as secondary */
+    const secLine = mk("div","det-secondary",`${e.pct || 0}% completion`);
+    secLine.style.color = pc;
+    card.appendChild(secLine);
+
+    if (e.difficulty) {
+      const db = mk("div","");
+      db.style.cssText = `font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:3px 9px;border-radius:4px;border:1px solid ${DC[e.difficulty]};background:${DC[e.difficulty]}20;color:${DC[e.difficulty]};display:inline-block;margin-bottom:10px;font-weight:700;`;
+      db.textContent = `${e.difficulty} \u00B7 ${DL[e.difficulty]}`;
+      card.appendChild(db);
+    }
+
+    /* Score breakdown if available */
+    if (e.scoreBreakdown) {
+      const bd = e.scoreBreakdown;
+      const sbRow2 = mk("div","score-breakdown");
+      sbRow2.style.marginBottom = "12px";
+      [
+        {label:"REPS", val:bd.rep, max:4, color:ec2},
+        {label:"DIFF", val:bd.diff, max:3, color:DC[1]},
+        {label:"WEIGHT", val:bd.wt, max:3, color:DC[2]}
+      ].forEach(({label, val, max, color}) => {
+        const col = mk("div","score-col");
+        col.appendChild(mk("div","score-col-lbl",label));
+        const bar2 = mk("div","score-mini-bar");
+        const fill2 = mk("div","score-mini-fill");
+        fill2.style.cssText = `width:${(val/max)*100}%;background:${color};`;
+        bar2.appendChild(fill2);
+        col.appendChild(bar2);
+        const v = mk("div","score-col-val",`${val}/${max}`);
+        v.style.color = color;
+        v.style.fontSize = "12px";
+        col.appendChild(v);
+        sbRow2.appendChild(col);
+      });
+      card.appendChild(sbRow2);
+    }
+
+    Object.entries(e.exercises || {}).forEach(([id, ex]) => {
+      const r = mk("div","sexrow");
+      const full = ex.doneReps >= ex.totalReps;
+      const dot = mk("div","sdot");
+      dot.style.background = full ? ec2 : (ex.doneReps > 0 ? DC[2] : "#333");
+      r.appendChild(dot);
+      const nmEl = mk("div","sexname",ex.name);
+      nmEl.style.color = ex.doneReps > 0 ? "#F0EDE8" : "#444";
+      r.appendChild(nmEl);
+      if (ex.weight && ex.weight !== "BW") r.appendChild(mk("div","sewt",ex.weight));
+      const rp = mk("div","serep",`${ex.doneReps}/${ex.totalReps}`);
+      rp.style.color = full ? ec2 : (ex.doneReps > 0 ? DC[2] : "#444");
+      r.appendChild(rp);
+      if (ex.score != null) {
+        const exSc = mk("div","sescore",String(ex.score));
+        const exScColor = scoreColor(ex.score);
+        exSc.style.cssText = `background:${exScColor}20;color:${exScColor};`;
+        r.appendChild(exSc);
+      }
+      card.appendChild(r);
+    });
+    sc.appendChild(card);
+  }
+  if (!Object.keys(S.hist).length) sc.appendChild(mk("div","empty","NO WORKOUTS LOGGED YET\nGO TRAIN."));
+}
+
+function startWO(type) {
+  S.wtype = type;
+  S.slides = buildSlides(type);
+  S.idx = 0;
+  S.sdiff = null;
+  S.setData = {};
+  S.screen = "workout";
+  render();
+}
+
+loadSettings();
+load();
+render();
+</script>
+</body>
+</html>
